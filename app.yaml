@@ -1,0 +1,18 @@
+application: wiki9839
+version: 2
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /.*
+  script: wikimain.app
+
+- url: /stylesheets
+  static_dir: stylesheets
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
+- name: jinja2
+  version: latest
