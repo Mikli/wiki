@@ -6,10 +6,18 @@ Created on Jan 3, 2013
 from baseh import BaseHandler
 from password_hash import PasswordHash
 from table_connection import UserConnection
-import urls
+from urls import url_list
+import logging
+
+PREVIOUS_PAGE_COOKIE = "Previous_page"
 
 class LoginHandler(BaseHandler):
+
     def get(self):
+        #logging.info(self.request.referer)
+        referer = str(self.request.referer)
+
+        self.setCookie(PREVIOUS_PAGE_COOKIE, referer)
         self.render("login.html")
 
     def post(self):
@@ -26,7 +34,13 @@ class LoginHandler(BaseHandler):
                 # make string like 84|938487394879fa3434
                 user_id_str = str(u.key().id()) + '|' + str(u.password.split('|')[0])
                 self.setCookie("user_id", user_id_str)
-                self.redirect(urls["welcome"])
+                referer = "/"
+                prev_r = str(self.request.cookies.get(PREVIOUS_PAGE_COOKIE))
+                #logging.info(prev_r)
+                if(prev_r):
+                    referer = prev_r
+                    self.delete_Cookie(PREVIOUS_PAGE_COOKIE)
+                self.redirect(referer)
             else:
                 error = True
         else:

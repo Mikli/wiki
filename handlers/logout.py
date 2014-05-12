@@ -10,4 +10,5 @@ class LogoutHandler(BaseHandler):
     def get(self):
         self.response.headers.add_header("Set-Cookie",
                                          "user_id=;  Path=/")
-        self.redirect(urls["goodbye"])
+        #self.write(self.request.referer)
+        self.redirect(self.request.referer)
