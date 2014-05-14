@@ -11,6 +11,7 @@ url_list = {"index": '/',
         "goodbye": '/',
         "signup": '/signup',
         "edit": '/_edit',
-        "page":''
+        "page":'',
+        "history": '/_history',
         }
 

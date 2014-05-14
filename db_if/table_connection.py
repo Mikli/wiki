@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Created on Dec 27, 2012
 
@@ -73,21 +74,41 @@ class WikiPageConnection(ATableConnection):
 #        return res["Blog"], query_time
 
     def add_entry(self, **table_fields):
-        page = self.get_page_by_name(table_fields["page_name"])
-        if page:
-            logging.info("deleting entry")
-            page.delete()
+        pages = self.get_all_versions_of_page_by_name(table_fields["page_name"])
+        #pn = pages.count()
+        #logging.info("page entries %s" + str(pn))
+        latest_version = 0
+        latest_page = pages.get()
+        if (latest_page):
+            logging.info("the version is" + str(latest_page.version))
+            latest_version = latest_page.version
+        table_fields["version"] = latest_version + 1;
         entry_id = ATableConnection.add_entry(self, **table_fields)
         #self._cache_reload(self._make_key("Blog"))
         return entry_id
 
     def get_page_content_by_name(self, page_name):
+        # TODO: memcache it!
+        logging.info("get_page_content_by_name")
         page = self.get_page_by_name(page_name)
         if page:
             return page.content
 
+    def get_page_content_by_name_and_version(self, page_name, version):
+        logging.info("get_page_content_by_name_and_version, page_name %s, version %s", page_name, version)
+        page = self.db_model_class.gql("where page_name=:1 and version=:2", page_name, long(version)).get()
+        if page:
+            return page.content
+
+    def get_all_versions_of_page_by_name(self, page_name):
+        pages = self.db_model_class.gql("where page_name=:1 order by version desc", page_name)
+        for page in pages:
+            logging.info(page)
+        return pages
+
     def get_page_by_name(self, page_name):
-        return self.db_model_class.gql("where page_name=:1", page_name).get()
+        logging.info("getting page by name:%s"%page_name)
+        return self.get_all_versions_of_page_by_name(page_name).get()
 
     def _cache_reload(self, key):
         if key == self._make_key("Blog"):

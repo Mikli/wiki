@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import jinja2
 import webapp2
 import os
@@ -40,3 +41,12 @@ class BaseHandler(webapp2.RequestHandler):
 
     def delete_Cookie(self, cookie_name):
         self.setCookie(cookie_name, '')
+
+    def _get_page_content(self, page_name):
+        from table_connection import WikiPageConnection
+        return WikiPageConnection().get_page_content_by_name(page_name)
+
+    def _get_page_content_for_version(self, page_name, version):
+        from table_connection import WikiPageConnection
+        return WikiPageConnection().get_page_content_by_name_and_version(page_name, version)
+

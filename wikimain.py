@@ -1,6 +1,6 @@
 import fix_path
 import webapp2
-import login, logout, signup, page, edit
+import login, logout, signup, page, edit, history
 from urls import url_list
 
 class MainPage(webapp2.RequestHandler):
@@ -17,6 +17,7 @@ url_map = [
     (url_list.get("login"), login.LoginHandler),
     (url_list.get("logout"), logout.LogoutHandler),
     (url_list.get("edit")  + PAGE_RE, edit.EditHandler),
+    (url_list.get("history") + PAGE_RE, history.HistoryHandler),
     (url_list.get("page")  + PAGE_RE, page.PageHandler),
 ]
 

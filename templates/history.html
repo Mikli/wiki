@@ -9,7 +9,7 @@
     {% if user %}
       <a class="login-link" href="{{edit_link}}">edit</a>
       |
-      <a class="login-link" href="{{history_link}}">history</a>
+      <a class="login-link" href="{{view_link}}">view</a>
       {{user.name}} (<a class="login-link" href="{{logout}}">logout</a>)
     {% else %}
       <a class="login-link" href="{{login}}">login</a>
@@ -19,7 +19,17 @@
   </div>
 
   <div class="content" id="content">
-  {% block content %}
-  {% endblock %}
+    {% autoescape true %}
+        {% for c in content %}
+           {{c.creation_time}} {{c.content[:100]}}
+
+           <a class="login-link" href="{{c.page_name}}?version={{c.version}}">view</a>
+           <a class="login-link" href="{{edit_link}}?version={{c.version}}">edit</a>
+
+           <br>
+
+        {% endfor %}
+    {% endautoescape %}
+
   </div>
 </html>
